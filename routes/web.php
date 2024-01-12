@@ -27,4 +27,7 @@ Route::get('/sales-report-periods', [SalesReportPeriodsController::class, 'index
 Route::get('/sales-report-years', [SalesReportYearsController::class, 'index'])->name('sales-report-years');
 Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
 Route::post('/update-password', [ChangePasswordController::class, 'update'])->name('update-password');
+Route::get('/export-to-excel', [SalesReportPeriodsController::class, 'exportToExcel'])->name('sales-report.export-to-excel');
+
+
 

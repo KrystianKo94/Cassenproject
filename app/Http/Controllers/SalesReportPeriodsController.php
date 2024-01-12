@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\OrdersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SalesReportPeriodsController extends Controller
 {
@@ -64,8 +66,61 @@ class SalesReportPeriodsController extends Controller
             ];
         })->values();
 
+        $exportData = $this->prepareExportData($salesData);
 
-        return view('sales-report-periods', compact('tableData', 'chartData'));
+        $hasData = count($tableData) > 1;
+
+
+        return view('sales-report-periods', compact('startDate', 'endDate', 'tableData', 'chartData', 'exportData', 'hasData'));
     }
+
+
+    public function exportToExcel(Request $request)
+    {
+        $startDate = $request->input('start_date', now()->subMonth()->startOfDay());
+        $endDate = $request->input('end_date', now()->endOfDay());
+
+        $salesData = DB::table('produkty')
+            ->select(
+                'grupy_produktow.nazwa as grupa',
+                DB::raw('strftime("%d.%m.%Y", zamowienia.data) as dzien'),
+                DB::raw('SUM(produkty.cena_netto * zamowienia.ilosc) as kwota_netto'),
+                DB::raw('SUM(produkty.cena_netto * zamowienia.ilosc * (1 + produkty.vat / 100.0)) as kwota_brutto')
+            )
+            ->leftJoin('zamowienia', 'produkty.id', '=', 'zamowienia.id_produkt')
+            ->leftJoin('grupy_produktow', 'produkty.id_grupa', '=', 'grupy_produktow.id')
+            ->whereBetween('zamowienia.data', [$startDate, $endDate])
+            ->groupBy('grupy_produktow.nazwa', 'zamowienia.data')
+            ->orderBy('zamowienia.data')
+            ->orderByDesc('grupy_produktow.nazwa')
+            ->get();
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getActiveSheet()->fromArray($this->prepareExportData($salesData), null, 'A1');
+
+        $filename = 'sales_report.xlsx';
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filename);
+
+        return response()->download($filename)->deleteFileAfterSend(true);
+    }
+
+    private function prepareExportData($salesData)
+    {
+        $exportData = [['Grupa', 'Dzień', 'Kwota Netto', 'Kwota Brutto']];
+
+        foreach ($salesData as $data) {
+            $exportData[] = [
+                $data->grupa,
+                $data->dzien,
+                number_format($data->kwota_netto, 2) . ' zł',
+                number_format($data->kwota_brutto, 2) . ' zł',
+            ];
+        }
+
+        return $exportData;
+    }
+
 }
 
