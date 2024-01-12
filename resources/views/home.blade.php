@@ -8,7 +8,6 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <!-- Navbar po lewej stronie (25%) -->
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">

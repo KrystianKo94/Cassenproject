@@ -27,7 +27,6 @@ class SalesReportYearsController extends Controller
                     'brutto' => $data->kwota_brutto ?? 0,
                 ];
 
-
                 $totalsNetto[$year] = ($totalsNetto[$year] ?? 0) + $row[$year]['netto'];
                 $totalsBrutto[$year] = ($totalsBrutto[$year] ?? 0) + $row[$year]['brutto'];
             }
@@ -45,7 +44,20 @@ class SalesReportYearsController extends Controller
 
         $salesData[] = $totals;
 
-        return view('sales-report-years', compact('salesData', 'years', 'totals'));
+
+        $chartData = [];
+        foreach ($salesData as $row) {
+            $chartData[] = [
+                'grupa' => $row['group'],
+                'netto' => array_values(array_column($row, 'netto')),
+                'brutto' => array_sum(array_column($row, 'brutto')),
+            ];
+        }
+
+
+        array_pop($chartData);
+
+        return view('sales-report-years', compact('salesData', 'years', 'totals', 'chartData'));
     }
 
     private function getSalesDataForGroupAndYear($group, $year)
