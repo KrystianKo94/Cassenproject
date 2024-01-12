@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\SalesReportPeriodsController;
+use App\Http\Controllers\SalesReportYearsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +19,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
+Route::get('/sales-report-periods', [SalesReportPeriodsController::class, 'index'])->name('sales-report-periods');
+Route::get('/sales-report-years', [SalesReportYearsController::class, 'index'])->name('sales-report-years');
+Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
+Route::post('/update-password', [ChangePasswordController::class, 'update'])->name('update-password');
+
