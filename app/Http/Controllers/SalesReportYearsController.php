@@ -20,6 +20,8 @@ class SalesReportYearsController extends Controller
         foreach ($groups as $group) {
             $row = ['group' => $group];
 
+
+
             foreach ($years as $year) {
                 $data = $this->getSalesDataForGroupAndYear($group, $year);
                 $row[$year] = [
@@ -54,7 +56,6 @@ class SalesReportYearsController extends Controller
             ];
         }
 
-
         array_pop($chartData);
 
         return view('sales-report-years', compact('salesData', 'years', 'totals', 'chartData'));
@@ -62,6 +63,8 @@ class SalesReportYearsController extends Controller
 
     private function getSalesDataForGroupAndYear($group, $year)
     {
+
+
         return DB::table('produkty')
             ->select(
                 DB::raw('SUM(produkty.cena_netto * zamowienia.ilosc) as kwota_netto'),

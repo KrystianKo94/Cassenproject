@@ -66,12 +66,12 @@ class SalesReportPeriodsController extends Controller
             ];
         })->values();
 
-        $exportData = $this->prepareExportData($salesData);
+       // $exportData = $this->prepareExportData($salesData);
 
         $hasData = count($tableData) > 1;
 
 
-        return view('sales-report-periods', compact('startDate', 'endDate', 'tableData', 'chartData', 'exportData', 'hasData'));
+        return view('sales-report-periods', compact('startDate', 'endDate', 'tableData', 'chartData', 'hasData'));
     }
 
 
@@ -118,6 +118,7 @@ class SalesReportPeriodsController extends Controller
                 number_format($data->kwota_brutto, 2) . ' zł',
             ];
         }
+
 
         return $exportData;
     }

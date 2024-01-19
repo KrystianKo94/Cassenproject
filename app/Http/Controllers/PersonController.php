@@ -31,17 +31,22 @@ class PersonController extends Controller
         return response()->json($person, 201);
     }
 
-    public function show($id)
-    {
-        $person = Person::findOrFail($id);
-        return response()->json($person, 200);
-    }
-
     public function destroy($id)
     {
         $person = Person::findOrFail($id);
         $person->delete();
 
         return response()->json(['message' => 'Dane usuniete pomyslnie'], 200);
+    }
+
+    public function showById($id)
+    {
+        $person = Person::find($id);
+
+        if (!$person) {
+            return response()->json(['message' => 'Użytkownik o podanym ID nie istnieje'], 404);
+        }
+
+        return response()->json($person, 200);
     }
 }

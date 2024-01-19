@@ -30,10 +30,13 @@ Route::get('/sales-report-years', [SalesReportYearsController::class, 'index'])-
 Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
 Route::post('/update-password', [ChangePasswordController::class, 'update'])->name('update-password');
 Route::get('/export-to-excel', [SalesReportPeriodsController::class, 'exportToExcel'])->name('sales-report.export-to-excel');
-Route::get('/people/{name}/{surname}', [PersonController::class, 'store']);
-Route::get('/people/{id}', [PersonController::class, 'show']);
-Route::get('/people/{id}', [PersonController::class, 'destroy']);
-Route::get('/people', [PersonController::class, 'index']);
+
+Route::prefix('/people')->group(function () {
+    Route::get('/', [PersonController::class, 'index']);
+    Route::get('/show/{id}', [PersonController::class, 'showById']);
+    Route::get('/create/{name}/{surname}', [PersonController::class, 'store']);
+    Route::get('/delete/{id}', [PersonController::class, 'destroy']);
+});
 
 
 

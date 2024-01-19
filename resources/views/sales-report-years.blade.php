@@ -61,7 +61,7 @@
                 data: {
                     labels: @json($years),
                     datasets: chartData.map(function (item, index) {
-                        var randomColor = '#' + Math.floor(Math.random()*16777215).toString(16); // Generowanie losowego koloru
+                        var randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
                         return {
                             label: item.grupa,
                             data: item.netto,
