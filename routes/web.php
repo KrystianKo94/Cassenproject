@@ -24,12 +24,11 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
-Route::get('/sales-report-periods', [SalesReportPeriodsController::class, 'index'])->name('sales-report-periods');
-Route::get('/sales-report-years', [SalesReportYearsController::class, 'index'])->name('sales-report-years');
-Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password');
+Route::get('/change-password', [ChangePasswordController::class, 'index'])->name('change-password')->middleware('auth');
+Route::get('/sales-report-periods', [SalesReportPeriodsController::class, 'index'])->name('sales-report-periods')->middleware('auth');
+Route::get('/sales-report-years', [SalesReportYearsController::class, 'index'])->name('sales-report-years')->middleware('auth');
 Route::post('/update-password', [ChangePasswordController::class, 'update'])->name('update-password');
-Route::get('/export-to-excel', [SalesReportPeriodsController::class, 'exportToExcel'])->name('sales-report.export-to-excel');
+Route::get('/export-to-excel', [SalesReportPeriodsController::class, 'exportToExcel'])->name('sales-report.export-to-excel')->middleware('auth');
 
 Route::prefix('/people')->group(function () {
     Route::get('/', [PersonController::class, 'index']);
